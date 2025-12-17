@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Conda / venv
+.env
+.venv/
+venv/
+
+# Streamlit
+.streamlit/
+
+# Dados (se aplicável)
+data/
+data/**
+
+# Notebooks temporários
+.ipynb_checkpoints/
+
+# Arquivos de pesquisa interna
+docs/references
