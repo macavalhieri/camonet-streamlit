@@ -12,11 +12,12 @@ venv/
 .streamlit/
 
 # Dados (se aplicável)
-data/
-data/**
+/data/
+/data/**
 
 # Notebooks temporários
 .ipynb_checkpoints/
 
-# Arquivos de pesquisa interna
-docs/references
+# Arquivos de pesquisa interna (PDFs, cartilhas, artigos)
+docs/references/
+docs/references/**
