@@ -19,10 +19,17 @@ O CAMO-Net tem como objetivo:
 
 ---
 
+## Live Application
+https://camonet-v4.streamlit.app
+
+---
+
 ## Data Privacy
 
 This repository contains only source code and documentation.
 No personal, sensitive or operational data from CAMO-Net are included.
+
+---
 
 ## Estrutura do Repositório
 
