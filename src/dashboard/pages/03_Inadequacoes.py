@@ -26,7 +26,7 @@ st.set_page_config(
     page_icon="🦠",
 )
 
-st.title('Inadequações: CID Infeccioso x Antibiótico')
+st.title('Inadequações: Diagnóstico Infeccioso x Antibiótico')
 st.caption(
     'Unidade de análise: atendimento (cod_atendimento). '
     'As flags são agregadas via OR lógico (max) a partir das prescrições.'
@@ -61,10 +61,10 @@ def _kpi_card(label: str, value, help_text: str | None = None):
 def _build_quadrant(df_att: pd.DataFrame) -> pd.DataFrame:
     """
     Retorna DF com classificação por quadrante:
-    - 'CID infeccioso + ATB' (esperado)
-    - 'CID infeccioso sem ATB' (atenção)
-    - 'ATB sem CID infeccioso' (atenção)
-    - 'Sem CID infeccioso e sem ATB' (esperado)
+    - 'Diagnóstico infeccioso + ATB' (esperado)
+    - 'Diagnóstico infeccioso sem ATB' (atenção)
+    - 'ATB sem Diagnóstico infeccioso' (atenção)
+    - 'Sem Diagnóstico infeccioso e sem ATB' (esperado)
     """
     tmp = df_att.copy()
 
@@ -73,12 +73,12 @@ def _build_quadrant(df_att: pd.DataFrame) -> pd.DataFrame:
 
     def classify(c: int, a: int) -> str:
         if c == 1 and a == 1:
-            return 'CID infeccioso + ATB'
+            return 'Diagnóstico infeccioso + ATB'
         if c == 1 and a == 0:
-            return 'CID infeccioso sem ATB'
+            return 'Diagnóstico infeccioso sem ATB'
         if c == 0 and a == 1:
-            return 'ATB sem CID infeccioso'
-        return 'Sem CID infeccioso e sem ATB'
+            return 'ATB sem Diagnóstico infeccioso'
+        return 'Sem Diagnóstico infeccioso e sem ATB'
 
     tmp['quadrante'] = [classify(c, a) for c, a in zip(cid, atb)]
     return tmp
@@ -144,9 +144,9 @@ with st.sidebar:
     st.subheader('Foco')
     focus_opts = [
             'Todos os atendimentos',
-            'Somente inconsistências (CID sem ATB ou ATB sem CID)',
-            'Somente CID infeccioso sem ATB',
-            'Somente ATB sem CID infeccioso',
+            'Somente inconsistências (Diagnóstico sem ATB ou ATB sem Diagnóstico)',
+            'Somente Diagnóstico infeccioso sem ATB',
+            'Somente ATB sem Diagnóstico infeccioso',
             # 'Somente com prescrição inadequada',
         ]
     sel_focus = st.radio('Recorte principal', options=focus_opts, index=0)
@@ -174,11 +174,11 @@ is_atb_sem_cid = (df_att['tem_cid_infeccioso'] == 0) & (df_att['tem_antibiotico'
 is_inconsistente = is_cid_sem_atb | is_atb_sem_cid
 # is_inadequado = (df_att['tem_presc_inadequada'] == 1)
 
-if sel_focus == 'Somente inconsistências (CID sem ATB ou ATB sem CID)':
+if sel_focus == 'Somente inconsistências (Diagnóstico sem ATB ou ATB sem Diagnóstico)':
     df_att = df_att[is_inconsistente]
-elif sel_focus == 'Somente CID infeccioso sem ATB':
+elif sel_focus == 'Somente Diagnóstico infeccioso sem ATB':
     df_att = df_att[is_cid_sem_atb]
-elif sel_focus == 'Somente ATB sem CID infeccioso':
+elif sel_focus == 'Somente ATB sem Diagnóstico infeccioso':
     df_att = df_att[is_atb_sem_cid]
 # elif sel_focus == 'Somente com prescrição inadequada':
 #     df_att = df_att[is_inadequado]
@@ -204,21 +204,21 @@ kpi1, kpi2, kpi3, kpi4, kpi5, kpi6 = st.columns(6)
 with kpi1:
     _kpi_card('Atendimentos', f'{total_atend:,}'.replace(',', '.'))
 with kpi2:
-    _kpi_card('Com CID infeccioso', f'{total_infecc:,}'.replace(',', '.'))
+    _kpi_card('Com Diagnóstico infeccioso', f'{total_infecc:,}'.replace(',', '.'))
 with kpi3:
     _kpi_card('Com ATB', f'{total_atb:,}'.replace(',', '.'))
 with kpi4:
     _kpi_card('Com inadequação', f'{total_inadequ:,}'.replace(',', '.'), help_text='Nível atendimento')
 with kpi5:
-    _kpi_card('CID infeccioso sem ATB', f'{cid_sem_atb:,}'.replace(',', '.'), help_text='Possível subtratamento')
+    _kpi_card('Diagnóstico infeccioso sem ATB', f'{cid_sem_atb:,}'.replace(',', '.'), help_text='Possível subtratamento')
 with kpi6:
-    _kpi_card('ATB sem CID infeccioso', f'{atb_sem_cid:,}'.replace(',', '.'), help_text='Possível uso indevido')
+    _kpi_card('ATB sem Diagnóstico infeccioso', f'{atb_sem_cid:,}'.replace(',', '.'), help_text='Possível uso indevido')
 
 st.write(
     f'**Taxas no recorte atual** — '
     f'Inadequação: **{pct_inadequ:.1%}** | '
-    f'CID infeccioso sem ATB: **{pct_cid_sem_atb:.1%}** | '
-    f'ATB sem CID infeccioso: **{pct_atb_sem_cid:.1%}**'
+    f'Diagnóstico infeccioso sem ATB: **{pct_cid_sem_atb:.1%}** | '
+    f'ATB sem Diagnóstico infeccioso: **{pct_atb_sem_cid:.1%}**'
 )
 
 st.divider()
@@ -233,7 +233,7 @@ with tab1:
     c1, c2 = st.columns([1.05, 0.95])
 
     with c1:
-        st.subheader('CID Infeccioso x Antibiótico (atendimentos)')
+        st.subheader('Diagnóstico Infeccioso x Antibiótico (atendimentos)')
 
         # 2x2 pivot
         tmp = df_att.copy()
@@ -241,24 +241,24 @@ with tab1:
         tmp['tem_cid_infeccioso'] = tmp['tem_cid_infeccioso'].fillna(0).astype(int)
         tmp['tem_antibiotico'] = tmp['tem_antibiotico'].fillna(0).astype(int)
 
-        tmp['CID infeccioso'] = tmp['tem_cid_infeccioso'].map({0: 'Não', 1: 'Sim'})
+        tmp['Diagnóstico infeccioso'] = tmp['tem_cid_infeccioso'].map({0: 'Não', 1: 'Sim'})
         tmp['Recebeu ATB'] = tmp['tem_antibiotico'].map({0: 'Não', 1: 'Sim'})
 
         mat = (
             tmp
-            .groupby(['CID infeccioso', 'Recebeu ATB'], dropna=False)
+            .groupby(['Diagnóstico infeccioso', 'Recebeu ATB'], dropna=False)
             .size()
             .reset_index(name='atendimentos')
         )
 
-        mat['CID infeccioso'] = pd.Categorical(mat['CID infeccioso'], categories=['Não', 'Sim'], ordered=True)
+        mat['Diagnóstico infeccioso'] = pd.Categorical(mat['Diagnóstico infeccioso'], categories=['Não', 'Sim'], ordered=True)
         mat['Recebeu ATB'] = pd.Categorical(mat['Recebeu ATB'], categories=['Não', 'Sim'], ordered=True)
-        mat = mat.sort_values(['CID infeccioso', 'Recebeu ATB'])
+        mat = mat.sort_values(['Diagnóstico infeccioso', 'Recebeu ATB'])
 
         fig = px.density_heatmap(
             mat,
             x='Recebeu ATB',
-            y='CID infeccioso',
+            y='Diagnóstico infeccioso',
             z='atendimentos',
             text_auto=True,
         )
@@ -267,7 +267,7 @@ with tab1:
 
         st.caption(
             'Leitura recomendada: priorizar a investigação dos quadrantes '
-            '"CID infeccioso sem ATB" e "ATB sem CID infeccioso".'
+            '"Diagnóstico infeccioso sem ATB" e "ATB sem Diagnóstico infeccioso".'
         )
 
     with c2:
@@ -353,7 +353,7 @@ with tab1:
 
 
     with right:
-        st.subheader('Especialidade — taxa de ATB sem CID infeccioso')
+        st.subheader('Especialidade — taxa de ATB sem Diagnóstico infeccioso')
 
         df_spec = df_att.copy()
         df_spec['atb_sem_cid'] = (df_spec['tem_cid_infeccioso'] == 0) & (df_spec['tem_antibiotico'] == 1)
@@ -406,7 +406,7 @@ with tab1:
         ymax = float(top['taxa_atb_sem_cid'].max())
         ymax = max(ymax, 0.01)  # evita zero
         fig4.update_yaxes(
-            title='Taxa de ATB sem CID infeccioso',
+            title='Taxa de ATB sem Diagnóstico infeccioso',
             tickformat='.1%',
             range=[0, min(1.0, ymax * 1.2)],  # 20% de folga e nunca acima de 100%
         )
