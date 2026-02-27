@@ -454,11 +454,23 @@ with tab3:
 
     col1, col2 = st.columns(2)
     with col1:
-        group_med = st.selectbox(
+        # group_med = st.selectbox(
+        #     'Agrupar por',
+        #     options=['composto_quimico', 'nome_medicamento'],
+        #     index=0
+        # )
+        group_map = {
+            'Composto químico (princípio ativo)': 'composto_quimico',
+            'Medicamento (nome comercial)': 'nome_medicamento',
+        }
+
+        group_label = st.selectbox(
             'Agrupar por',
-            options=['composto_quimico', 'nome_medicamento'],
-            index=0
+            list(group_map.keys()),
+            index=0,  # default: composto_quimico
         )
+
+        group_med = group_map[group_label]
     with col2:
         top_med = st.slider('Top N antibióticos', 5, 30, 15, 1)
 
