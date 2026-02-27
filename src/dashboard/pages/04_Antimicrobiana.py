@@ -115,17 +115,43 @@ def _apply_filters(df_raw: pd.DataFrame, df_att: pd.DataFrame) -> tuple[pd.DataF
         st.divider()
         st.subheader('Parâmetros do gráfico')
 
-        diag_dim = st.selectbox(
+        # diag_dim = st.selectbox(
+        #     'Dimensão do diagnóstico',
+        #     options=['diag_agrupado', 'diag_analise', 'cod_cid_ciap'],
+        #     index=0
+        # )
+        diag_dim_map = {
+            'Diagnóstico (agrupado)': 'diag_agrupado',
+            'Diagnóstico (análise)': 'diag_analise',
+            'Código do diagnóstico (CID/CIAP)': 'cod_cid_ciap',
+        }
+
+        diag_dim_label = st.selectbox(
             'Dimensão do diagnóstico',
-            options=['diag_agrupado', 'diag_analise', 'cod_cid_ciap'],
-            index=0
+            list(diag_dim_map.keys()),
+            index=0,  # default: diag_agrupado
         )
 
-        comp_dim = st.selectbox(
+        diag_dim = diag_dim_map[diag_dim_label]
+
+        # comp_dim = st.selectbox(
+        #     'Dimensão do antibiótico',
+        #     options=['composto_quimico', 'nome_medicamento', 'cod_medicamento'],
+        #     index=0
+        # )
+        atb_dim_map = {
+            'Composto químico (princípio ativo)': 'composto_quimico',
+            'Medicamento (nome comercial)': 'nome_medicamento',
+            'Código do medicamento': 'cod_medicamento',
+        }
+
+        atb_dim_label = st.selectbox(
             'Dimensão do antibiótico',
-            options=['composto_quimico', 'nome_medicamento', 'cod_medicamento'],
-            index=0
+            list(atb_dim_map.keys()),
+            index=0,  # default: composto_quimico
         )
+
+        comp_dim = atb_dim_map[atb_dim_label]
 
         top_diag = st.slider('Top N diagnósticos (por atendimentos)', 5, 30, 15, 1)
         top_comp = st.slider('Top N compostos (legenda)', 5, 25, 12, 1)
