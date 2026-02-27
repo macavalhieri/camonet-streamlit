@@ -347,11 +347,23 @@ with tab2:
         colA, colB, colC = st.columns(3)
 
         with colA:
-            diag_dim = st.selectbox(
+            # diag_dim = st.selectbox(
+            #     'Dimensão',
+            #     options=['diag_agrupado', 'diag_analise', 'cod_cid_ciap'],
+            #     index=0
+            # )
+            dim_map = {
+                'Diagnóstico agrupado': 'diag_agrupado',
+                'Diagnóstico detalhado': 'diag_analise',
+                'Código diagnóstico (CID/CIAP)': 'cod_cid_ciap'
+            }
+
+            dim_label = st.selectbox(
                 'Dimensão',
-                options=['diag_agrupado', 'diag_analise', 'cod_cid_ciap'],
-                index=0
+                list(dim_map.keys())
             )
+
+            diag_dim = dim_map[dim_label]
 
         with colB:
             top_diag = st.slider('Top N diagnósticos', 5, 30, 15, 1)
